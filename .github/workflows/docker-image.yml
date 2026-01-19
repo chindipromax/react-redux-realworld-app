@@ -8,7 +8,7 @@ on:
 jobs:
   build-scan-push:
     runs-on: ubuntu-latest
-    environment: dev
+    environment: devsecops
 
     steps:
       - name: Checkout source
