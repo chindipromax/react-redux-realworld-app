@@ -54,6 +54,7 @@ jobs:
         uses: aquasecurity/trivy-action@0.20.0
         continue-on-error: true
         with:
-          image-ref: pranavshejul15/devsecops:${{ github.sha }}
+          scan-type: image
+          image-ref: docker.io/pranavshejul15/devsecops:master-${{ github.sha }}
           severity: HIGH,CRITICAL
           format: table
