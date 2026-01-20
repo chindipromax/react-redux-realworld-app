@@ -40,9 +40,9 @@ jobs:
           args: >
             -Dsonar.organization=${{ secrets.SONAR_ORG }}
             -Dsonar.projectKey=frontend-devsecops
-            -Dsonar.projectName=Frontend DevSecOps
             -Dsonar.sources=src
             -Dsonar.exclusions=node_modules/**,build/**
+
 
   # ==================================================
   # BUILD + SCAN + PUSH IMAGE
