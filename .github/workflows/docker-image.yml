@@ -11,12 +11,47 @@ env:
 
 jobs:
   # ==================================================
-  # BUILD + SCAN + PUSH
+  # SONARQUBE (SONARCLOUD) CODE SCAN
+  # ==================================================
+  sonarqube-scan:
+    name: SonarQube Code Scan
+    runs-on: ubuntu-latest
+    environment: devsecops
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.organization=${{ secrets.SONAR_ORG }}
+            -Dsonar.projectKey=frontend-devsecops
+            -Dsonar.projectName=Frontend DevSecOps
+            -Dsonar.sources=src
+            -Dsonar.exclusions=node_modules/**,build/**
+
+  # ==================================================
+  # BUILD + SCAN + PUSH IMAGE
   # ==================================================
   build-scan-push:
     name: Build, Scan & Push Image
     runs-on: ubuntu-latest
     environment: devsecops
+    needs: sonarqube-scan
 
     steps:
       # --------------------
@@ -116,7 +151,6 @@ jobs:
       - name: Deploy Kubernetes manifests
         run: |
           kubectl apply -f k8s/frontend.yaml
-          
 
       # --------------------
       # Update image to exact commit
